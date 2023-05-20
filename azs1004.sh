@@ -69,7 +69,7 @@ function analizarVariables(){
 	fi
 }
 
-# Toma los directorios con nombre [a-z]{3}[0-9]{4}
+# Toma los nombres de los directorios con nombre [a-z]{3}[0-9]{4}
 files=( $(find ./ -type d -exec basename {} \; | grep -wP '[a-z]{3}[0-9]{4}') )
 
 #Si el archivo resultado existe elimina su contenido y si no existe lo crea
@@ -94,16 +94,19 @@ for ((i=0;i<${#files[@]}-1;i++)) do
 
 		analizarFunciones $file1 $file2
 
+		echo "El fichero $file1.sh tiene `wc -l < "$file1.temp"` lineas" >> $fileName
+		echo "El fichero $file2.sh tiene `wc -l < "$file2.temp"` lineas" >> $fileName
+
 		# Añade un separador para al final del analisis de estos dos ficheros
 		echo -e "#-------------------------#\n" >> $fileName
 
-		# Borra los ficheros temporales
+		# Borra los ficheros temporales creados previamente
 		rm $file1.temp $file2.temp 2> /dev/null
 	done
 done
 
 # Se quitan las diferencias que añade el comando dif, pues solo queremos ver las coincidencias
-cat $fileName | sed '/^\*\*\*/d' | sed '/^\---/d' | sed '/^\!/d' | grep -vE '^\s*(!|\+)' | uniq > $fileName.txt
+cat $fileName > $fileName.txt
 
 # Elimina el fichero sin la extensión .txt y con las diferencias del comando diff
 rm $fileName
