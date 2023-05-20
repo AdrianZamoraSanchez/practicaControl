@@ -90,7 +90,7 @@ for ((i=0;i<${#files[@]}-1;i++)) do
 		# Llamadas a las funciones que se encargan de analizar las similitudes de los ficheros
 		compararLineas $file1 $file2
 
-    	analizarVariables $file1 $file2
+    		analizarVariables $file1 $file2
 
 		analizarFunciones $file1 $file2
 
