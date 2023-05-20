@@ -105,8 +105,5 @@ for ((i=0;i<${#files[@]}-1;i++)) do
 	done
 done
 
-# Se quitan las diferencias que añade el comando dif, pues solo queremos ver las coincidencias
-cat $fileName > $fileName.txt
-
-# Elimina el fichero sin la extensión .txt y con las diferencias del comando diff
-rm $fileName
+# Se renombra el fichero con extensión .txt
+cp $fileName ./$fileName.txt
