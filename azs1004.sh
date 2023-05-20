@@ -106,4 +106,4 @@ for ((i=0;i<${#files[@]}-1;i++)) do
 done
 
 # Se renombra el fichero con extensión .txt
-cp $fileName ./$fileName.txt
+mv $fileName ./$fileName.txt
