@@ -2,7 +2,7 @@
 
 # ---- Comentario de programa azs1004.sh -----
 # Autor: Adrián Zamora Sánchez
-# Fecha: 20/05/2023
+# Fecha: 21/05/2023
 # Versión: 1.0
 # Descipción: compara los ficheros con un formato específico para buscar
 #			  sus diferencias y sobre todo sus similitudes
@@ -13,10 +13,10 @@ function compararLineas(){
 	file2=$2
 
 	# Se crea una cabecera con los nombres de los ficheros a analizar
-	echo "Analisis de $file1 --- $file2 con el comando diff" >> $fileName
+	echo "Analisis de $file1 --- $file2 con el comando diff" >> $fileName.txt
 
 	# Se analizan con diff los ficheros y se guardan en el fichero de destino
-	diff -i -c $file1.temp $file2.temp | sed 's/\.temp/.sh/' >> $fileName
+	diff -i -p $file1.temp $file2.temp | sed 's/\.temp/.sh/' >> $fileName.txt
 }
 
 # Función encargada de analizar las funciones
@@ -35,12 +35,12 @@ function analizarFunciones(){
 
 	# Si no hay variables duplicadas, muestra un mensaje indicándolo
 	if [ ${#duplicados[@]} -eq 0 ]; then
-		echo "No hay funciones duplicadas entre ${file1}.temp y ${file2}.temp" >> $fileName
+		echo "No hay funciones duplicadas entre ${file1}.temp y ${file2}.temp" >> $fileName.txt
 	fi
 
 	# Si hay variables duplicadas, muestra un mensaje indicándolo y el número de coincidencias
 	if [ ${#duplicados[@]} -ne 0 ]; then
-		echo "Las siguientes ${#duplicados[@]} funciones esán duplicadas duplicadas: ${duplicados[@]}" >> $fileName
+		echo "Las siguientes ${#duplicados[@]} funciones esán duplicadas duplicadas: ${duplicados[@]}" >> $fileName.txt
 	fi
 }
 
@@ -48,7 +48,7 @@ function analizarFunciones(){
 function analizarVariables(){
 	file1=$1
 	file2=$2
-
+	
 	# Busca las variables en el archivo .sh y las guarda en el array variables
 	variables1=($(grep -o '\$[[:alnum:]_]*' "${file1}.temp" | sed 's/\$//' | sort -u))
 
@@ -60,12 +60,12 @@ function analizarVariables(){
 
 	# Si no hay variables duplicadas, muestra un mensaje indicándolo
 	if [ ${#duplicados[@]} -eq 0 ]; then
-		echo "No hay variables duplicadas entre ${file1}.temp y ${file2}.temp" >> $fileName
+		echo "No hay variables duplicadas entre ${file1}.temp y ${file2}.temp" >> $fileName.txt
 	fi
 
 	# Si hay variables duplicadas, muestra un mensaje indicándolo y el número de coincidencias
 	if [ ${#duplicados[@]} -ne 0 ]; then
-		echo "Las siguientes ${#duplicados[@]} variables esán duplicadas duplicadas: ${duplicados[@]}" >> $fileName
+		echo "Las siguientes ${#duplicados[@]} variables esán duplicadas duplicadas: ${duplicados[@]}" >> $fileName.txt
 	fi
 }
 
@@ -74,7 +74,7 @@ files=( $(find ./ -type d -exec basename {} \; | grep -wP '[a-z]{3}[0-9]{4}') )
 
 #Si el archivo resultado existe elimina su contenido y si no existe lo crea
 fileName=$(basename $PWD)
-echo "" > $fileName
+echo "" > $fileName.txt
 
 # Bucle para analizar uno por uno los ficheros
 for ((i=0;i<${#files[@]}-1;i++)) do
@@ -94,16 +94,13 @@ for ((i=0;i<${#files[@]}-1;i++)) do
 
 		analizarFunciones $file1 $file2
 
-		echo "El fichero $file1.sh tiene `wc -l < "$file1.temp"` lineas" >> $fileName
-		echo "El fichero $file2.sh tiene `wc -l < "$file2.temp"` lineas" >> $fileName
+		echo "El fichero $file1.sh tiene `wc -l < "$file1.temp"` lineas" >> $fileName.txt
+		echo "El fichero $file2.sh tiene `wc -l < "$file2.temp"` lineas" >> $fileName.txt
 
 		# Añade un separador para al final del analisis de estos dos ficheros
-		echo -e "#-------------------------#\n" >> $fileName
+		echo -e "#-------------------------#\n" >> $fileName.txt
 
 		# Borra los ficheros temporales creados previamente
 		rm $file1.temp $file2.temp 2> /dev/null
 	done
 done
-
-# Se renombra el fichero con extensión .txt
-mv $fileName ./$fileName.txt
