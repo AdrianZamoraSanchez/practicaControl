@@ -25,13 +25,13 @@ function analizarFunciones(){
 	file2=$2
 
 	# Busca las variables en el archivo .temp y las guarda en el array funciones1
-	funciones1=($(grep -oE 'function [[:alnum:]_]+|^[[:alnum:]_]+\(\)' "${file1}.temp" | sed 's/function //' | sort -u))
+	funciones1=($(grep -oE 'function [[:alnum:]_]+' "${file1}.temp" | sed 's/function //' | sort -u))
 
 	# Busca las variables en el archivo .temp y las guarda en el array funciones2
-	funciones2=($(grep -oE 'function [[:alnum:]_]+|^[[:alnum:]_]+\(\)' "${file2}.temp" | sed 's/function //' | sort -u))
+	funciones2=($(grep -oE 'function [[:alnum:]_]+' "${file2}.temp" | sed 's/function //' | sort -u))
 
 	# Busca variables duplicadas en los dos arrays y las guarda en el array duplicados
-	duplicados=($(comm -12 <(echo "${funciones1[*]}" | tr ' ' '\n' | sort) <(echo "${funciones2[*]}" | tr ' ' '\n' | sort)))
+	duplicados=($(comm -12 <(echo "${funciones1[*]}" | tr ' ' '\n') <(echo "${funciones2[*]}" | tr ' ' '\n')))
 
 	# Si no hay variables duplicadas, muestra un mensaje indicándolo
 	if [ ${#duplicados[@]} -eq 0 ]; then
@@ -56,7 +56,7 @@ function analizarVariables(){
 	variables2=($(grep -o '\$[[:alnum:]_]*' "${file2}.temp" | sed 's/\$//' | sort -u))
 
 	# Busca variables duplicadas en los dos arrays y las guarda en el array duplicados
-	duplicados=($(comm -12 <(echo "${variables1[*]}" | tr ' ' '\n' | sort) <(echo "${variables2[*]}" | tr ' ' '\n' | sort)))
+	duplicados=($(comm -12 <(echo "${variables1[*]}" | tr ' ' '\n') <(echo "${variables2[*]}" | tr ' ' '\n')))
 
 	# Si no hay variables duplicadas, muestra un mensaje indicándolo
 	if [ ${#duplicados[@]} -eq 0 ]; then
@@ -90,7 +90,7 @@ for ((i=0;i<${#files[@]}-1;i++)) do
 		# Llamadas a las funciones que se encargan de analizar las similitudes de los ficheros
 		compararLineas $file1 $file2
 
-    		analizarVariables $file1 $file2
+    	analizarVariables $file1 $file2
 
 		analizarFunciones $file1 $file2
 
