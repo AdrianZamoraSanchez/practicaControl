@@ -7,7 +7,7 @@
 # Descipción: compara los ficheros con un formato específico para buscar
 #			  sus diferencias y sobre todo sus similitudes
 
-# Función que comapra mediante el comando diff
+# Función que compara mediante el comando diff
 function compararLineas(){
 	file1=$1
 	file2=$2
@@ -72,7 +72,7 @@ function analizarVariables(){
 # Toma los nombres de los directorios con nombre [a-z]{3}[0-9]{4}
 files=( $(find ./ -type d -exec basename {} \; | grep -wP '[a-z]{3}[0-9]{4}') )
 
-#Si el archivo resultado existe elimina su contenido y si no existe lo crea
+# Si el archivo resultado existe elimina su contenido y si no existe lo crea
 fileName=$(basename $PWD)
 echo "" > $fileName.txt
 
@@ -90,10 +90,11 @@ for ((i=0;i<${#files[@]}-1;i++)) do
 		# Llamadas a las funciones que se encargan de analizar las similitudes de los ficheros
 		compararLineas $file1 $file2
 
-    	analizarVariables $file1 $file2
+    		analizarVariables $file1 $file2
 
 		analizarFunciones $file1 $file2
 
+		# Se guarda el número de lineas de código de cada fichero
 		echo "El fichero $file1.sh tiene `wc -l < "$file1.temp"` lineas" >> $fileName.txt
 		echo "El fichero $file2.sh tiene `wc -l < "$file2.temp"` lineas" >> $fileName.txt
 
